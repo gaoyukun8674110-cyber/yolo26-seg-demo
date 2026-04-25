@@ -13,7 +13,7 @@ The project deliberately focuses on three engineering signals:
 - The MVTec conversion pipeline has already been run for `bottle`, `capsule`, and `metal_nut`.
 - Processed data now lives under `data/processed/`.
 - The API exposes `/health`, `/metrics`, `/examples`, `/predict`, and `/artifacts/...`.
-- The default prediction flow runs in `demo-mode` until a real YOLO26 segmentation weight is attached.
+- The default prediction flow runs in `demo-mode`, but it now switches to real inference automatically when `YOLO26_MODEL_PATH` is configured.
 
 ## Repository Layout
 
@@ -64,6 +64,14 @@ pip install -r api/requirements.txt
 Run the API:
 
 ```powershell
+python -m uvicorn api.app.main:app --reload
+```
+
+Enable real inference later with a trained weight file:
+
+```powershell
+$env:YOLO26_MODEL_PATH = "H:\yolo26-mvtec-seg-demo\models\exports\best.pt"
+pip install ultralytics
 python -m uvicorn api.app.main:app --reload
 ```
 
@@ -119,5 +127,5 @@ The current `InferenceService` saves the uploaded image into `artifacts/generate
 To upgrade the project from demo mode to real inference:
 
 1. Train or export a real YOLO26 segmentation model on `data/processed/`.
-2. Replace the default `InferenceService` behavior in `api/app/services/inference.py`.
+2. Point `YOLO26_MODEL_PATH` at the exported weight and install `ultralytics`.
 3. Update `artifacts/metrics/summary.json` with real measured latency and model metrics.
