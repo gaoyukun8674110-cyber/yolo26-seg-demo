@@ -4,7 +4,12 @@ __pycache__/
 node_modules/
 dist/
 coverage/
+*.tsbuildinfo
 artifacts/generated/
 data/processed/
 models/checkpoints/
 models/exports/
+web/vite.config.js
+web/vite.config.d.ts
+web/vitest.config.js
+web/vitest.config.d.ts
