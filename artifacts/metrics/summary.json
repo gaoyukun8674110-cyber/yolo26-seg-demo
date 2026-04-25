@@ -1,0 +1,12 @@
+{
+  "task": "defect-segmentation",
+  "categories": [
+    "bottle",
+    "capsule",
+    "metal_nut"
+  ],
+  "model": "yolo26s-seg",
+  "latency_ms": 42.5,
+  "dice": 0.81,
+  "iou": 0.69
+}

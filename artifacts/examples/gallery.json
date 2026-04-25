@@ -1,0 +1,10 @@
+{
+  "items": [
+    {
+      "id": "bottle_broken_large_001",
+      "category": "bottle",
+      "status": "success",
+      "image": "/artifacts/examples/bottle_broken_large_001_overlay.png"
+    }
+  ]
+}
