@@ -281,6 +281,13 @@ def _write_label(output_path: Path, rows: list[str]) -> None:
     output_path.write_text("\n".join(rows), encoding="utf-8")
 
 
+def _replace_file(source_path: Path, target_path: Path) -> None:
+    if target_path.exists():
+        target_path.chmod(0o666)
+        target_path.unlink()
+    shutil.copy2(source_path, target_path)
+
+
 def _build_manifest(records: list[SampleRecord]) -> dict[str, object]:
     split_counts: dict[str, int] = {"train": 0, "val": 0, "test": 0}
     for record in records:
@@ -321,7 +328,7 @@ def convert_mvtec_dataset(
         target_image_path = output_root / "images" / record.split / record.output_image_name
         target_label_path = output_root / "labels" / record.split / f"{Path(record.output_image_name).stem}.txt"
 
-        shutil.copy2(source_image_path, target_image_path)
+        _replace_file(source_image_path, target_image_path)
         if record.has_defect:
             mask = load_png_mask(Path(record.source_mask_path or ""))
             label_rows = mask_to_yolo_rows(mask)
@@ -342,7 +349,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--categories",
         nargs="+",
-        default=["bottle", "capsule", "metal_nut"],
+        default=["bottle", "cable", "capsule", "hazelnut", "leather", "metal_nut"],
         help="Category folders to convert from the MVTec root.",
     )
     parser.add_argument("--train-ratio", type=float, default=0.7)

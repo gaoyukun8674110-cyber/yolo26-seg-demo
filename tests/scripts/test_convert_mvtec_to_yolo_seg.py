@@ -81,3 +81,36 @@ def test_convert_mvtec_dataset_builds_processed_layout(tmp_path: Path) -> None:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["summary"]["total_samples"] == 3
     assert manifest["summary"]["categories"] == ["bottle"]
+
+
+def test_convert_mvtec_dataset_can_rerun_on_existing_output(tmp_path: Path) -> None:
+    source_root = tmp_path / "mvtec"
+    category_root = source_root / "bottle"
+    (category_root / "train" / "good").mkdir(parents=True)
+    (category_root / "test" / "good").mkdir(parents=True)
+    (category_root / "test" / "broken").mkdir(parents=True)
+    (category_root / "ground_truth" / "broken").mkdir(parents=True)
+
+    image_pixels = np.zeros((6, 6), dtype=np.uint8)
+    image_pixels[1:5, 1:5] = 180
+    train_image = category_root / "train" / "good" / "000.png"
+    good_image = category_root / "test" / "good" / "001.png"
+    defect_image = category_root / "test" / "broken" / "002.png"
+    _write_grayscale_png(train_image, image_pixels)
+    _write_grayscale_png(good_image, image_pixels)
+    _write_grayscale_png(defect_image, image_pixels)
+    train_image.chmod(0o444)
+    good_image.chmod(0o444)
+    defect_image.chmod(0o444)
+
+    mask_pixels = np.zeros((6, 6), dtype=np.uint8)
+    mask_pixels[2:5, 2:5] = 255
+    _write_grayscale_png(category_root / "ground_truth" / "broken" / "002_mask.png", mask_pixels)
+
+    output_root = tmp_path / "processed"
+
+    convert_mvtec_dataset(source_root, output_root, categories=["bottle"])
+    convert_mvtec_dataset(source_root, output_root, categories=["bottle"])
+
+    manifest = json.loads((output_root / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["summary"]["total_samples"] == 3

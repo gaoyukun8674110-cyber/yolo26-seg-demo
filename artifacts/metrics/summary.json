@@ -2,16 +2,19 @@
   "task": "defect-segmentation",
   "categories": [
     "bottle",
+    "cable",
     "capsule",
+    "hazelnut",
+    "leather",
     "metal_nut"
   ],
   "model": "yolo26s-seg",
   "model_status": "demo-mode",
-  "total_samples": 978,
-  "train_samples": 692,
-  "val_samples": 143,
-  "test_samples": 143,
-  "defect_samples": 265,
-  "good_samples": 713,
+  "total_samples": 2222,
+  "train_samples": 1552,
+  "val_samples": 335,
+  "test_samples": 335,
+  "defect_samples": 519,
+  "good_samples": 1703,
   "latency_ms": 0
 }

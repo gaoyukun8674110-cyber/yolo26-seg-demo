@@ -10,7 +10,7 @@ The project deliberately focuses on three engineering signals:
 
 ## Current Status
 
-- The MVTec conversion pipeline has already been run for `bottle`, `capsule`, and `metal_nut`.
+- The MVTec conversion pipeline has already been run for `bottle`, `cable`, `capsule`, `hazelnut`, `leather`, and `metal_nut`.
 - Processed data now lives under `data/processed/`.
 - The API exposes `/health`, `/metrics`, `/examples`, `/predict`, and `/artifacts/...`.
 - The default prediction flow runs in `demo-mode`, but it now switches to real inference automatically when `YOLO26_MODEL_PATH` is configured.
@@ -32,7 +32,7 @@ The conversion entry point is `scripts\convert_mvtec_to_yolo_seg.py`.
 Example:
 
 ```powershell
-H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\convert_mvtec_to_yolo_seg.py --source-root "H:\YOLO-Train\MVTec AD" --output-root "H:\yolo26-mvtec-seg-demo\data\processed" --categories bottle capsule metal_nut
+H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\convert_mvtec_to_yolo_seg.py --source-root "H:\YOLO-Train\MVTec AD" --output-root "H:\yolo26-mvtec-seg-demo\data\processed" --categories bottle cable capsule hazelnut leather metal_nut
 ```
 
 The script writes:
@@ -44,12 +44,12 @@ The script writes:
 
 Current processed summary:
 
-- total samples: `978`
-- train: `692`
-- val: `143`
-- test: `143`
-- good samples: `713`
-- defect samples: `265`
+- total samples: `2222`
+- train: `1552`
+- val: `335`
+- test: `335`
+- good samples: `1703`
+- defect samples: `519`
 
 ## Python API
 
