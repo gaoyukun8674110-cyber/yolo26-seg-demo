@@ -6,7 +6,12 @@
     "metal_nut"
   ],
   "model": "yolo26s-seg",
-  "latency_ms": 42.5,
-  "dice": 0.81,
-  "iou": 0.69
+  "model_status": "demo-mode",
+  "total_samples": 978,
+  "train_samples": 692,
+  "val_samples": 143,
+  "test_samples": 143,
+  "defect_samples": 265,
+  "good_samples": 713,
+  "latency_ms": 0
 }
