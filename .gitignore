@@ -8,6 +8,9 @@ coverage/
 *.tsbuildinfo
 artifacts/generated/
 data/processed/
+runs/
+项目简介.txt
+*.pt
 models/checkpoints/
 models/exports/
 web/vite.config.js

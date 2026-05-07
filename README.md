@@ -12,8 +12,10 @@ The project deliberately focuses on three engineering signals:
 
 - The MVTec conversion pipeline has already been run for `bottle`, `cable`, `capsule`, `hazelnut`, `leather`, and `metal_nut`.
 - Processed data now lives under `data/processed/`.
+- A YOLO26-style segmentation training run has been exported from `runs/segment/yolo26s_seg_mvtec6_defect_v1/results.csv`.
+- `artifacts/metrics/summary.json` now reports real training metrics instead of only `demo-mode` placeholders.
 - The API exposes `/health`, `/metrics`, `/examples`, `/predict`, and `/artifacts/...`.
-- The default prediction flow runs in `demo-mode`, but it now switches to real inference automatically when `YOLO26_MODEL_PATH` is configured.
+- The API prediction flow still supports a no-model fallback for demos, and switches to real inference automatically when `YOLO26_MODEL_PATH` is configured.
 
 ## Repository Layout
 
@@ -50,6 +52,28 @@ Current processed summary:
 - test: `335`
 - good samples: `1703`
 - defect samples: `519`
+
+## Training Metrics
+
+The current exported training run is intentionally reported as-is. It proves the data conversion, training artifact, and metrics export path, but the model quality is not yet strong enough to claim production defect segmentation performance.
+
+- model: `yolo26s-seg`
+- model status: `trained-evaluated`
+- model path: `runs/segment/yolo26s_seg_mvtec6_defect_v1/weights/best.pt`
+- training epochs: `129`
+- best epoch by mask mAP50: `91`
+- precision(M): `0.20681`
+- recall(M): `0.16216`
+- mAP50(M): `0.12025`
+- mAP50-95(M): `0.04791`
+
+Regenerate these metrics after a new training run:
+
+```powershell
+H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\export_training_metrics.py
+```
+
+The next model-quality work is to improve the dataset split and training recipe, inspect failed examples by category, tune confidence and image size, and compare a single cross-category `defect` model against per-category baselines.
 
 ## Python API
 
@@ -120,12 +144,13 @@ Run the web tests:
 npm --prefix web test
 ```
 
-## Attaching A Real Model Later
+## Real Inference
 
-The current `InferenceService` saves the uploaded image into `artifacts/generated/` and returns that path as the overlay. This keeps the demo usable before training is complete.
+When no model path is configured, `InferenceService` saves the uploaded image into `artifacts/generated/` and returns that path as the overlay. This keeps the API and web demo usable in environments without the model file.
 
-To upgrade the project from demo mode to real inference:
+To run real inference with the trained weight:
 
-1. Train or export a real YOLO26 segmentation model on `data/processed/`.
-2. Point `YOLO26_MODEL_PATH` at the exported weight and install `ultralytics`.
-3. Update `artifacts/metrics/summary.json` with real measured latency and model metrics.
+1. Point `YOLO26_MODEL_PATH` at `runs/segment/yolo26s_seg_mvtec6_defect_v1/weights/best.pt` or another exported weight.
+2. Install `ultralytics`, `opencv-python-headless`, and `numpy` if they are not already present.
+3. Run the API and test `POST /predict` with held-out defect and good samples.
+4. Replace `latency_ms` in `artifacts/metrics/summary.json` with measured prediction latency from the target machine.

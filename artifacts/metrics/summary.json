@@ -9,12 +9,21 @@
     "metal_nut"
   ],
   "model": "yolo26s-seg",
-  "model_status": "demo-mode",
+  "model_status": "trained-evaluated",
   "total_samples": 2222,
   "train_samples": 1552,
   "val_samples": 335,
   "test_samples": 335,
   "defect_samples": 519,
   "good_samples": 1703,
-  "latency_ms": 0
+  "latency_ms": 0,
+  "model_path": "runs/segment/yolo26s_seg_mvtec6_defect_v1/weights/best.pt",
+  "training_epochs": 129,
+  "best_epoch": 91,
+  "best_selection_metric": "metrics/mAP50(M)",
+  "metrics_source": "runs/segment/yolo26s_seg_mvtec6_defect_v1/results.csv",
+  "precision_mask": 0.20681,
+  "recall_mask": 0.16216,
+  "map50_mask": 0.12025,
+  "map50_95_mask": 0.04791
 }
