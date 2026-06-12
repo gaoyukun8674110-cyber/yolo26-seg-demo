@@ -8,6 +8,8 @@ coverage/
 *.tsbuildinfo
 artifacts/generated/
 data/processed/
+data/processed_balanced/
+data/per_category/
 runs/
 项目简介.txt
 *.pt

@@ -55,17 +55,34 @@ Current processed summary:
 
 ## Training Metrics
 
-The current exported training run is intentionally reported as-is. It proves the data conversion, training artifact, and metrics export path, but the model quality is not yet strong enough to claim production defect segmentation performance.
+The reported run is the unified single-class `defect` model trained on the rebalanced dataset (`data/processed_balanced`, train good:defect downsampled to ~1.5:1). Metrics are mask (M) results on the held-out val split.
 
-- model: `yolo26s-seg`
+- model: `yolo26s-seg` (unified cross-category `defect`)
 - model status: `trained-evaluated`
-- model path: `runs/segment/yolo26s_seg_mvtec6_defect_v1/weights/best.pt`
-- training epochs: `129`
-- best epoch by mask mAP50: `91`
-- precision(M): `0.20681`
-- recall(M): `0.16216`
-- mAP50(M): `0.12025`
-- mAP50-95(M): `0.04791`
+- model path: `runs/segment/yolo26s_seg_mvtec6_balanced_v1/weights/best.pt`
+- training epochs: `150`
+- best epoch by mask mAP50: `116`
+- precision(M): `0.47091`
+- recall(M): `0.27027`
+- mAP50(M): `0.26476`
+- mAP50-95(M): `0.12006`
+- inference latency: `24.44 ms` p50 / `27.90 ms` p95 (RTX 3070 Ti Laptop, CUDA, 50 samples)
+
+### Unified vs per-category baseline
+
+`docs/comparison_table.md` compares the single unified model against six per-category models on the same val split (mask mAP50):
+
+| Category | Unified | Per-category |
+| --- | ---: | ---: |
+| bottle | 0.294 | 0.623 |
+| cable | 0.302 | 0.465 |
+| capsule | 0.717 | 0.590 |
+| hazelnut | 0.201 | 0.335 |
+| leather | 0.820 | 0.839 |
+| metal_nut | 0.183 | 0.815 |
+| **Overall** | **0.420** | **0.611** |
+
+The per-category models reach higher overall accuracy (0.611 vs 0.420), but the unified model uses a single weight / one GPU footprint and even wins on `capsule` — a deliberate accuracy-vs-operational-cost trade-off that motivates the unified task reframing.
 
 Regenerate these metrics after a new training run:
 
@@ -73,7 +90,17 @@ Regenerate these metrics after a new training run:
 H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\export_training_metrics.py
 ```
 
-The next model-quality work is to improve the dataset split and training recipe, inspect failed examples by category, tune confidence and image size, and compare a single cross-category `defect` model against per-category baselines.
+Model-quality and experiment utilities added for the rework:
+
+```powershell
+H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\rebalance_dataset.py --source data\processed --output data\processed_balanced --good-ratio 1.5 --seed 0
+H:\yolo26-mvtec-seg-demo\.venv\Scripts\python train26.py --data data\processed_balanced\data.yaml --name yolo26s_seg_mvtec6_balanced_v1
+H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\evaluate_per_category.py --weight runs\segment\yolo26s_seg_mvtec6_balanced_v1\weights\best.pt --data-root data\processed_balanced --split val
+H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\make_per_category_datasets.py --source data\processed --output-root data\per_category --good-ratio 1.5 --seed 0
+H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\compare_unified_vs_percategory.py --unified-weight runs\segment\yolo26s_seg_mvtec6_balanced_v1\weights\best.pt --percat-root runs\segment --data-root data\processed_balanced
+```
+
+`train26.py`, `evaluate_per_category.py`, and `compare_unified_vs_percategory.py` require trained YOLO weights and an environment with `ultralytics`; CI covers their importable/mockable logic rather than running GPU training.
 
 ## Python API
 
@@ -153,4 +180,8 @@ To run real inference with the trained weight:
 1. Point `YOLO26_MODEL_PATH` at `runs/segment/yolo26s_seg_mvtec6_defect_v1/weights/best.pt` or another exported weight.
 2. Install `ultralytics`, `opencv-python-headless`, and `numpy` if they are not already present.
 3. Run the API and test `POST /predict` with held-out defect and good samples.
-4. Replace `latency_ms` in `artifacts/metrics/summary.json` with measured prediction latency from the target machine.
+4. Measure and write latency into `artifacts/metrics/summary.json`:
+
+```powershell
+H:\yolo26-mvtec-seg-demo\.venv\Scripts\python scripts\benchmark_latency.py --weight runs\segment\yolo26s_seg_mvtec6_defect_v1\weights\best.pt --samples 50 --warmup 5
+```

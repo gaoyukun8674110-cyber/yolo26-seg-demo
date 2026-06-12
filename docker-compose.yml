@@ -1,0 +1,44 @@
+# YOLO26 MVTec defect-segmentation demo — local GPU deployment.
+#
+# Usage:
+#   docker compose up --build
+#   Frontend:  http://localhost:8080
+#   Backend:   http://localhost:8000  (proxied by the frontend)
+#
+# The trained weight is mounted read-only from the host (NOT baked into the
+# image). Override MODEL_PATH below if you use a different run.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    image: yolo26-seg-api
+    environment:
+      # Path INSIDE the container — must match the volume mount below.
+      YOLO26_MODEL_PATH: /app/runs/segment/yolo26s_seg_mvtec6_balanced_v1/weights/best.pt
+    volumes:
+      # Mount trained runs read-only so weights stay out of the image.
+      - ./runs:/app/runs:ro
+      # Persist generated overlays on the host.
+      - ./artifacts:/app/artifacts
+    ports:
+      - "8000:8000"
+    # Request the NVIDIA GPU (needs nvidia-container-toolkit on the host).
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    image: yolo26-seg-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api

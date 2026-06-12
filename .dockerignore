@@ -1,0 +1,14 @@
+# Keep the API build context small — exclude heavy / irrelevant paths.
+.venv/
+**/__pycache__/
+.pytest_cache/
+web/node_modules/
+web/dist/
+.git/
+.tmp/
+data/
+runs/
+*.pt
+*.onnx
+docs/
+tests/

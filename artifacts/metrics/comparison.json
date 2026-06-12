@@ -1,0 +1,54 @@
+{
+  "unified_weight": "runs\\segment\\yolo26s_seg_mvtec6_balanced_v1\\weights\\best.pt",
+  "split": "val",
+  "categories": {
+    "bottle": {
+      "unified_map50": 0.29375,
+      "per_category_map50": 0.623469,
+      "parameters": 10365727,
+      "latency_ms": 41.5,
+      "weight": "runs\\segment\\percat_bottle_v1\\weights\\best.pt"
+    },
+    "cable": {
+      "unified_map50": 0.302476,
+      "per_category_map50": 0.46466,
+      "parameters": 10365727,
+      "latency_ms": 46.62,
+      "weight": "runs\\segment\\percat_cable_v1\\weights\\best.pt"
+    },
+    "capsule": {
+      "unified_map50": 0.716946,
+      "per_category_map50": 0.590263,
+      "parameters": 10365727,
+      "latency_ms": 44.09,
+      "weight": "runs\\segment\\percat_capsule_v1\\weights\\best.pt"
+    },
+    "hazelnut": {
+      "unified_map50": 0.201267,
+      "per_category_map50": 0.334824,
+      "parameters": 10365727,
+      "latency_ms": 72.25,
+      "weight": "runs\\segment\\percat_hazelnut_v1\\weights\\best.pt"
+    },
+    "leather": {
+      "unified_map50": 0.819814,
+      "per_category_map50": 0.83881,
+      "parameters": 10365727,
+      "latency_ms": 41.28,
+      "weight": "runs\\segment\\percat_leather_v1\\weights\\best.pt"
+    },
+    "metal_nut": {
+      "unified_map50": 0.183339,
+      "per_category_map50": 0.815,
+      "parameters": 10365727,
+      "latency_ms": 38.66,
+      "weight": "runs\\segment\\percat_metal_nut_v1\\weights\\best.pt"
+    }
+  },
+  "overall": {
+    "unified_map50": 0.419599,
+    "per_category_map50": 0.611171,
+    "parameters": 10365727.0,
+    "latency_ms": 47.4
+  }
+}

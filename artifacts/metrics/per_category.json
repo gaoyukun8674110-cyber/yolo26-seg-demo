@@ -1,0 +1,48 @@
+{
+  "weight": "runs\\segment\\yolo26s_seg_mvtec6_balanced_v1\\weights\\best.pt",
+  "split": "val",
+  "per_category": {
+    "bottle": {
+      "precision_mask": 0.376772,
+      "recall_mask": 0.444444,
+      "map50_mask": 0.29375,
+      "map50_95_mask": 0.153027
+    },
+    "cable": {
+      "precision_mask": 0.582183,
+      "recall_mask": 0.347826,
+      "map50_mask": 0.302476,
+      "map50_95_mask": 0.160382
+    },
+    "capsule": {
+      "precision_mask": 0.760178,
+      "recall_mask": 0.666667,
+      "map50_mask": 0.716946,
+      "map50_95_mask": 0.422578
+    },
+    "hazelnut": {
+      "precision_mask": 0.488431,
+      "recall_mask": 0.212121,
+      "map50_mask": 0.201267,
+      "map50_95_mask": 0.104245
+    },
+    "leather": {
+      "precision_mask": 0.67852,
+      "recall_mask": 0.8,
+      "map50_mask": 0.819814,
+      "map50_95_mask": 0.405018
+    },
+    "metal_nut": {
+      "precision_mask": 0.193521,
+      "recall_mask": 0.25,
+      "map50_mask": 0.183339,
+      "map50_95_mask": 0.090071
+    }
+  },
+  "overall": {
+    "precision_mask": 0.385989,
+    "recall_mask": 0.333333,
+    "map50_mask": 0.260639,
+    "map50_95_mask": 0.130745
+  }
+}
